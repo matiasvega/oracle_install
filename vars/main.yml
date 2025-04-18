@@ -5,3 +5,5 @@ oracle_group: oinstall
 oracle_inventory: /u01/app/oraInventory
 oracle_zip_file: LINUX.X64_193000_db_home.zip
 oracle_response_file: db_install.rsp
+
+ssh_key: /var/jenkins_home/.ssh/id_rsa.pub
