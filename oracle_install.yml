@@ -3,9 +3,11 @@
   vars:
     ip: "{{ lookup('env','ip') }}"
 
-- name: Show the IP
-  debug:
-    var: "{{ ip }}"
+  pre_tasks:
+  
+    - name: Show the IP
+      debug:
+        var: "{{ ip }}"
 
 
 # - name: Dynamically add a new DB host
