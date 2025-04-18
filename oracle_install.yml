@@ -1,4 +1,5 @@
 ---
+#Adding the new host dinamically to a new group using the IP providedß
 - hosts: localhost
   vars_files:
     - vars/main.yml
@@ -18,50 +19,49 @@
         ansible_user: operador
         ansible_ssh_private_key_file: "{{ ssh_key | default(omit) }}"
 
+#Start the installation or pre requisites
+- name: Install Oracle Database 19c
+  hosts: new_db
+  become: true
+  vars_files:
+    - vars/main.yml
 
+  pre_tasks:
+    - name: Ensure required OS packages are installed
+      package:
+        name:
+          - unzip
+          - binutils
+          - compat-libcap1
+          - compat-libstdc++
+          - gcc
+          - gcc-c++
+          - glibc
+          - glibc-devel
+          - ksh
+          - libaio
+          - libaio-devel
+          - libgcc
+          - libstdc++
+          - libstdc++-devel
+          - make
+          - sysstat
+          - smartmontools
+          - net-tools
+          - tux
+        state: present
 
-
-# - name: Install Oracle Database 19c
-#   hosts: new_db
-#   become: true
-#   vars_files:
-#     - vars/main.yml
-
-#   pre_tasks:
-#     - name: Ensure required OS packages are installed
-#       package:
-#         name:
-#           - unzip
-#           - binutils
-#           - compat-libcap1
-#           - compat-libstdc++
-#           - gcc
-#           - gcc-c++
-#           - glibc
-#           - glibc-devel
-#           - ksh
-#           - libaio
-#           - libaio-devel
-#           - libgcc
-#           - libstdc++
-#           - libstdc++-devel
-#           - make
-#           - sysstat
-#           - smartmontools
-#           - net-tools
-#         state: present
-
-#     - name: Create required directories
-#       file:
-#         path: "{{ item }}"
-#         state: directory
-#         owner: "{{ oracle_user }}"
-#         group: "{{ oracle_group }}"
-#         mode: '0755'
-#       loop:
-#         - "{{ oracle_base }}"
-#         - "{{ oracle_home }}"
-#         - "{{ oracle_inventory }}"
+    - name: Create required directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ oracle_user }}"
+        group: "{{ oracle_group }}"
+        mode: '0755'
+      loop:
+        - "{{ oracle_base }}"
+        - "{{ oracle_home }}"
+        - "{{ oracle_inventory }}"
 
 #   tasks:
 #     - name: Upload Oracle installer
