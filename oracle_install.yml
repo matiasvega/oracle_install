@@ -9,14 +9,11 @@
       debug:
         var: "{{ ip }}"
 
-    - name: Dynamically add a new DB host
-      hosts: localhost
-      tasks:
-        - name: Add new host to group "new_db"
-          add_host:
-            name: "{{ ip }}"
-            groups: new_db
-            # ansible_user: jenkins
+    - name: Dynamically add new host to group "new_db"
+      add_host:
+        name: "{{ ip }}"
+        groups: new_db
+        # ansible_user: jenkins
 
 
 
