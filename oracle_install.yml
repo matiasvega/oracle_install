@@ -3,7 +3,7 @@
   vars:
     ip: "{{ lookup('env','ip') }}"
 
-  pre_tasks:
+  tasks:
   
     - name: Show the IP
       debug:
