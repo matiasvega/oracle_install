@@ -35,6 +35,7 @@
         path: /etc/hosts
         line: "{{ ip }}  {{ dbhostname }}.localdomain  {{ dbhostname }}"
         insertafter: EOF
+        backup: yes
       
 
     - name: Configure hostname
