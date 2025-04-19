@@ -1,5 +1,5 @@
 ---
-#Adding the new host dinamically to a new group using the IP providedß
+#Adding the new host dinamically to a new group using the IP provided
 - hosts: localhost
   vars_files:
     - vars/main.yml
@@ -9,11 +9,6 @@
 
   tasks:
 
-    - name: Definir Variables para todo el playbook
-      ansible.builtin.set_fact:
-        ip: "{{ lookup('env','ip') }}"
-        dbhostname: "{{ lookup('env','dbhostname')  }}"
-          
     - name: Show the IP
       debug:
         var: "{{ ip }}"

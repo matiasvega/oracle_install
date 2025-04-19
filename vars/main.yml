@@ -8,3 +8,6 @@ oracle_response_file: db_install.rsp
 oracle_scripts: /home/oracle/scripts
 
 ssh_key: /var/jenkins_home/.ssh/id_rsa
+
+ip: "{{ lookup('env','ip') }}"
+dbhostname: "{{ lookup('env','dbhostname')  }}"
