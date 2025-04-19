@@ -35,14 +35,22 @@
     - name: Ensure required OS packages are installed
       raw: dnf install -y oracle-database-preinstall-19c
 
-    - name: Configure hosts file
-      become: true
-      ansible.builtin.lineinfile:
+
+    - name: Update /etc/hosts safely in container
+      blockinfile:
         path: /etc/hosts
-        line: "{{ ip }}  {{ dbhostname }}.localdomain  {{ dbhostname }}"
-        insertafter: EOF
-        backup: yes
-      become_user: root
+        block: |
+          {{ ip }}  {{ dbhostname }}.localdomain  {{ dbhostname }}
+      become: true      
+
+    # - name: Configure hosts file
+    #   become: true
+    #   ansible.builtin.lineinfile:
+    #     path: /etc/hosts
+    #     line: "{{ ip }}  {{ dbhostname }}.localdomain  {{ dbhostname }}"
+    #     insertafter: EOF
+    #     backup: yes
+    #   become_user: root
 
     - name: Configure hostname
       become: true
