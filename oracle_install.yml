@@ -70,11 +70,11 @@
 
 
   tasks:
-    - name: Upload Oracle installer
-      copy:
-        src: "files/{{ oracle_zip_file }}"
-        dest: "/tmp/{{ oracle_zip_file }}"
-        mode: '0644'
+    # - name: Upload Oracle installer
+    #   copy:
+    #     src: "files/{{ oracle_zip_file }}"
+    #     dest: "/tmp/{{ oracle_zip_file }}"
+    #     mode: '0644'
 
     - name: Unzip Oracle installer
       unarchive:
