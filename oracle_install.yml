@@ -5,6 +5,7 @@
     - vars/main.yml
   vars:
     ip: "{{ lookup('env','ip') }}"
+    dbhostname: "{{ lookup('env','dbhostname')  }}"
 
   tasks:
   
@@ -28,6 +29,18 @@
 
   pre_tasks:
 
+    - name: Configure hosts file
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "{{ ip }}  {{ dbhostname }}.localdomain  {{ dbhostname }}"
+        insertafter: EOF
+
+    - name: Configure hostname
+      ansible.builtin.lineinfile:
+        path: /etc/hostname
+        line: "{{ dbhostname }}.localdomain"
+        insertafter: EOF
+
     - name: Ensure base Python packages are installed
       raw: sudo dnf install -y python3 python3-libselinux python3-libsemanage python3-dnf   
 
@@ -46,47 +59,56 @@
         - "{{ oracle_base }}"
         - "{{ oracle_home }}"
         - "{{ oracle_inventory }}"
+        - "{{ oracle_scripts }}"
 
-#   tasks:
-#     - name: Upload Oracle installer
-#       copy:
-#         src: "files/{{ oracle_zip_file }}"
-#         dest: "/tmp/{{ oracle_zip_file }}"
-#         mode: '0644'
+# En el fichero /etc/selinux/config el parámetro «SELINUX» debe estar a disabled
+# SELINUX=permissive
+# setenforce Permissive
+# systemctl stop firewalld
+# systemctl disable firewalld
 
-#     - name: Unzip Oracle installer
-#       unarchive:
-#         src: "/tmp/{{ oracle_zip_file }}"
-#         dest: "{{ oracle_home }}"
-#         remote_src: yes
-#         owner: "{{ oracle_user }}"
-#         group: "{{ oracle_group }}"
 
-#     - name: Run Oracle installer in silent mode
-#       become_user: "{{ oracle_user }}"
-#       command: >
-#         {{ oracle_home }}/runInstaller
-#         -silent
-#         -responseFile {{ oracle_home }}/install/response/db_install.rsp
-#         oracle.install.option=INSTALL_DB_SWONLY
-#         ORACLE_HOME={{ oracle_home }}
-#         ORACLE_BASE={{ oracle_base }}
-#         oracle.install.db.InstallEdition=EE
-#         oracle.install.db.OSDBA_GROUP=dba
-#         oracle.install.db.OSOPER_GROUP=oper
-#         oracle.install.db.OSBACKUPDBA_GROUP=backupdba
-#         oracle.install.db.OSDGDBA_GROUP=dgdba
-#         oracle.install.db.OSKMDBA_GROUP=kmdba
-#         oracle.install.db.OSRACDBA_GROUP=racdba
-#         DECLINE_SECURITY_UPDATES=true
-#       args:
-#         chdir: "{{ oracle_home }}"
-#       register: install_result
-#       ignore_errors: true
 
-#     - name: Run root scripts after installation
-#       command: "{{ item }}"
-#       with_items:
-#         - "{{ oracle_inventory }}/orainstRoot.sh"
-#         - "{{ oracle_home }}/root.sh"
-#       when: install_result.rc == 0
+  tasks:
+    - name: Upload Oracle installer
+      copy:
+        src: "files/{{ oracle_zip_file }}"
+        dest: "/tmp/{{ oracle_zip_file }}"
+        mode: '0644'
+
+    - name: Unzip Oracle installer
+      unarchive:
+        src: "/tmp/{{ oracle_zip_file }}"
+        dest: "{{ oracle_home }}"
+        remote_src: yes
+        owner: "{{ oracle_user }}"
+        group: "{{ oracle_group }}"
+
+    - name: Run Oracle installer in silent mode
+      become_user: "{{ oracle_user }}"
+      command: >
+        {{ oracle_home }}/runInstaller
+        -silent
+        -responseFile {{ oracle_home }}/install/response/db_install.rsp
+        oracle.install.option=INSTALL_DB_SWONLY
+        ORACLE_HOME={{ oracle_home }}
+        ORACLE_BASE={{ oracle_base }}
+        oracle.install.db.InstallEdition=EE
+        oracle.install.db.OSDBA_GROUP=dba
+        oracle.install.db.OSOPER_GROUP=oper
+        oracle.install.db.OSBACKUPDBA_GROUP=backupdba
+        oracle.install.db.OSDGDBA_GROUP=dgdba
+        oracle.install.db.OSKMDBA_GROUP=kmdba
+        oracle.install.db.OSRACDBA_GROUP=racdba
+        DECLINE_SECURITY_UPDATES=true
+      args:
+        chdir: "{{ oracle_home }}"
+      register: install_result
+      ignore_errors: true
+
+    - name: Run root scripts after installation
+      command: "{{ item }}"
+      with_items:
+        - "{{ oracle_inventory }}/orainstRoot.sh"
+        - "{{ oracle_home }}/root.sh"
+      when: install_result.rc == 0
