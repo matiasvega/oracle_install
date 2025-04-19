@@ -30,18 +30,20 @@
   pre_tasks:
 
     - name: Configure hosts file
+      become: true
       ansible.builtin.lineinfile:
         path: /etc/hosts
         line: "{{ ip }}  {{ dbhostname }}.localdomain  {{ dbhostname }}"
         insertafter: EOF
-      become: true
+      
 
     - name: Configure hostname
+      become: true
       ansible.builtin.lineinfile:
         path: /etc/hostname
         line: "{{ dbhostname }}.localdomain"
         insertafter: EOF
-      become: true
+      
 
     - name: Ensure base Python packages are installed
       raw: sudo dnf install -y python3 python3-libselinux python3-libsemanage python3-dnf   
