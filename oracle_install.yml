@@ -29,6 +29,12 @@
 
   pre_tasks:
 
+    - name: Ensure base Python packages are installed
+      raw: sudo dnf install -y python3 python3-libselinux python3-libsemanage python3-dnf   
+
+    - name: Ensure required OS packages are installed
+      raw: dnf install -y oracle-database-preinstall-19c
+
     - name: Configure hosts file
       become: true
       ansible.builtin.lineinfile:
@@ -45,13 +51,6 @@
         line: "{{ dbhostname }}.localdomain"
         insertafter: EOF
       become_user: root
-      
-
-    - name: Ensure base Python packages are installed
-      raw: sudo dnf install -y python3 python3-libselinux python3-libsemanage python3-dnf   
-
-    - name: Ensure required OS packages are installed
-      raw: dnf install -y oracle-database-preinstall-19c
 
 
     - name: Create required directories
