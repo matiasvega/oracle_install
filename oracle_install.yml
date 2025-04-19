@@ -30,12 +30,14 @@
   pre_tasks:
 
     - name: Configure hosts file
+      become:true
       ansible.builtin.lineinfile:
         path: /etc/hosts
         line: "{{ ip }}  {{ dbhostname }}.localdomain  {{ dbhostname }}"
         insertafter: EOF
 
     - name: Configure hostname
+      become:true
       ansible.builtin.lineinfile:
         path: /etc/hostname
         line: "{{ dbhostname }}.localdomain"
