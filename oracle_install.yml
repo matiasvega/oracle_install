@@ -7,6 +7,11 @@
     ip: "{{ lookup('env','ip') }}"
     dbhostname: "{{ lookup('env','dbhostname')  }}"
 
+- name: Definir Variables para todo el playbook
+  ansible.builtin.set_fact:
+    ip: "{{ lookup('env','ip') }}"
+    dbhostname: "{{ lookup('env','dbhostname')  }}"
+
   tasks:
   
     - name: Show the IP
