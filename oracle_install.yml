@@ -96,6 +96,7 @@
           export ORACLE_BASE={{ oracle_base }}
           export ORACLE_HOME={{ oracle_home }}
           export PATH=$ORACLE_HOME/bin:$PATH
+          export CV_ASSUME_DISTID=OL8
         owner: "{{ oracle_user }}"
         group: "{{ oracle_group }}"
         create: true
