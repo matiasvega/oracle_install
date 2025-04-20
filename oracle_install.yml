@@ -98,6 +98,8 @@
       command: >
         {{ oracle_home }}/runInstaller
         -silent
+        -ignoreSysPrereqs
+        -ignorePrereq
         -responseFile {{ oracle_home }}/install/response/db_install.rsp
         oracle.install.option=INSTALL_DB_SWONLY
         ORACLE_HOME={{ oracle_home }}
