@@ -89,9 +89,46 @@
         owner: "{{ oracle_user }}"
         group: "{{ oracle_group }}"
 
+    - name: Set Oracle environment variables in bashrc
+      blockinfile:
+        path: /home/oracle/.bashrc
+        block: |
+          export ORACLE_BASE={{ oracle_base }}
+          export ORACLE_HOME={{ oracle_home }}
+          export PATH=$ORACLE_HOME/bin:$PATH
+        owner: "{{ oracle_user }}"
+        group: "{{ oracle_group }}"
+        create: true
+      become_user: oracle
+
+    - name: Set Oracle environment variables in profile
+      blockinfile:
+        path: /etc/profile.d/oracle.sh
+        block: |
+          export ORACLE_BASE={{ oracle_base }}
+          export ORACLE_HOME={{ oracle_home }}
+          export PATH=$ORACLE_HOME/bin:$PATH
+          export CV_ASSUME_DISTID=OL8
+        owner: root
+        group: root
+        create: true
+        mode: '0755'
+
+    - name: Reload bashrc
+      command: source /home/oracle/.bashrc
+      become_user: oracle
+      ignore_errors: yes # In case the user is not logged in
+
+    - name: Reload profile
+      command: ". /etc/profile.d/oracle.sh"
+      become_user: root
+      ignore_errors: yes
+
+
+
     - name: Run Oracle installer in silent mode
-      become: yes
-      become_method: sudo
+      # become: yes
+      # become_method: sudo      
       become_user: "{{ oracle_user }}"
       vars:
         ansible_ssh_pipelining: true
