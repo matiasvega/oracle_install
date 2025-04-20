@@ -90,7 +90,11 @@
         group: "{{ oracle_group }}"
 
     - name: Run Oracle installer in silent mode
+      become: yes
+      become_method: sudo
       become_user: "{{ oracle_user }}"
+      vars:
+        ansible_ssh_pipelining: true
       command: >
         {{ oracle_home }}/runInstaller
         -silent
