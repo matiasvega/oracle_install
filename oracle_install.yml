@@ -137,6 +137,11 @@
       become: yes
       become_method: sudo
       become_user: "{{ oracle_user }}"
+      environment:
+        ORACLE_BASE: {{ oracle_base }}
+        ORACLE_HOME: {{ oracle_home }}
+        LANG: en_US.UTF-8
+        PATH: $ORACLE_HOME/bin:$PATH
       vars:
         ansible_ssh_pipelining: true
       command: >
