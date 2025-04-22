@@ -74,99 +74,99 @@
 
 
 
-  tasks:
-    # - name: Upload Oracle installer
-    #   copy:
-    #     src: "files/{{ oracle_zip_file }}"
-    #     dest: "/tmp/{{ oracle_zip_file }}"
-    #     mode: '0644'
+  # tasks:
+  #   # - name: Upload Oracle installer
+  #   #   copy:
+  #   #     src: "files/{{ oracle_zip_file }}"
+  #   #     dest: "/tmp/{{ oracle_zip_file }}"
+  #   #     mode: '0644'
 
-    - name: Unzip Oracle installer
-      unarchive:
-        src: "/tmp/{{ oracle_zip_file }}"
-        dest: "{{ oracle_home }}"
-        remote_src: yes
-        owner: "{{ oracle_user }}"
-        group: "{{ oracle_group }}"
+  #   - name: Unzip Oracle installer
+  #     unarchive:
+  #       src: "/tmp/{{ oracle_zip_file }}"
+  #       dest: "{{ oracle_home }}"
+  #       remote_src: yes
+  #       owner: "{{ oracle_user }}"
+  #       group: "{{ oracle_group }}"
 
-    - name: Set Oracle environment variables in bashrc
-      blockinfile:
-        path: /home/oracle/.bashrc
-        block: |
-          export ORACLE_BASE={{ oracle_base }}
-          export ORACLE_HOME={{ oracle_home }}
-          export PATH=$ORACLE_HOME/bin:$PATH
-          export CV_ASSUME_DISTID=OL8
-        owner: "{{ oracle_user }}"
-        group: "{{ oracle_group }}"
-        create: true
-      become_user: oracle
+  #   - name: Set Oracle environment variables in bashrc
+  #     blockinfile:
+  #       path: /home/oracle/.bashrc
+  #       block: |
+  #         export ORACLE_BASE={{ oracle_base }}
+  #         export ORACLE_HOME={{ oracle_home }}
+  #         export PATH=$ORACLE_HOME/bin:$PATH
+  #         export CV_ASSUME_DISTID=OL8
+  #       owner: "{{ oracle_user }}"
+  #       group: "{{ oracle_group }}"
+  #       create: true
+  #     become_user: oracle
 
-    - name: Set Oracle environment variables in profile
-      blockinfile:
-        path: /etc/profile.d/oracle.sh
-        block: |
-          export ORACLE_BASE={{ oracle_base }}
-          export ORACLE_HOME={{ oracle_home }}
-          export PATH=$ORACLE_HOME/bin:$PATH
-          export CV_ASSUME_DISTID=OL8
-        owner: root
-        group: root
-        create: true
-        mode: '0755'
+  #   - name: Set Oracle environment variables in profile
+  #     blockinfile:
+  #       path: /etc/profile.d/oracle.sh
+  #       block: |
+  #         export ORACLE_BASE={{ oracle_base }}
+  #         export ORACLE_HOME={{ oracle_home }}
+  #         export PATH=$ORACLE_HOME/bin:$PATH
+  #         export CV_ASSUME_DISTID=OL8
+  #       owner: root
+  #       group: root
+  #       create: true
+  #       mode: '0755'
 
-    - name: Reload bashrc
-      command: source /home/oracle/.bashrc
-      become_user: oracle
-      ignore_errors: yes # In case the user is not logged in
+  #   - name: Reload bashrc
+  #     command: source /home/oracle/.bashrc
+  #     become_user: oracle
+  #     ignore_errors: yes # In case the user is not logged in
 
-    - name: Reload profile
-      command: ". /etc/profile.d/oracle.sh"
-      become_user: root
-      ignore_errors: yes
+  #   - name: Reload profile
+  #     command: ". /etc/profile.d/oracle.sh"
+  #     become_user: root
+  #     ignore_errors: yes
 
-    - name: Debug env
-      command: env
-      register: env_result
+  #   - name: Debug env
+  #     command: env
+  #     register: env_result
       
-    - name: show env
-      debug:
-        var: "{{ env_result }}"
+  #   - name: show env
+  #     debug:
+  #       var: "{{ env_result }}"
 
-    - name: Run Oracle installer in silent mode
-      become: yes
-      become_method: sudo
-      become_user: "{{ oracle_user }}"
-      environment:
-        ORACLE_BASE: "{{ oracle_base }}"
-        ORACLE_HOME: "{{ oracle_home }}"
-        LANG: en_US.UTF-8
-        PATH: "{{ oracle_home }}/bin:$PATH"
-      vars:
-        ansible_ssh_pipelining: true
-      command: >
-        {{ oracle_home }}/runInstaller
-        -ignorePrereq -waitforcompletion -silent
-        -responseFile {{ oracle_home }}/install/response/db_install.rsp
-        oracle.install.option=INSTALL_DB_SWONLY
-        ORACLE_HOME={{ oracle_home }}
-        ORACLE_BASE={{ oracle_base }}
-        oracle.install.db.InstallEdition=EE
-        oracle.install.db.OSDBA_GROUP=dba
-        oracle.install.db.OSOPER_GROUP=oper
-        oracle.install.db.OSBACKUPDBA_GROUP=backupdba
-        oracle.install.db.OSDGDBA_GROUP=dgdba
-        oracle.install.db.OSKMDBA_GROUP=kmdba
-        oracle.install.db.OSRACDBA_GROUP=racdba
-        DECLINE_SECURITY_UPDATES=true
-      args:
-        chdir: "{{ oracle_home }}"
-      register: install_result
-      ignore_errors: true
+  #   - name: Run Oracle installer in silent mode
+  #     become: yes
+  #     become_method: sudo
+  #     become_user: "{{ oracle_user }}"
+  #     environment:
+  #       ORACLE_BASE: "{{ oracle_base }}"
+  #       ORACLE_HOME: "{{ oracle_home }}"
+  #       LANG: en_US.UTF-8
+  #       PATH: "{{ oracle_home }}/bin:$PATH"
+  #     vars:
+  #       ansible_ssh_pipelining: true
+  #     command: >
+  #       {{ oracle_home }}/runInstaller
+  #       -ignorePrereq -waitforcompletion -silent
+  #       -responseFile {{ oracle_home }}/install/response/db_install.rsp
+  #       oracle.install.option=INSTALL_DB_SWONLY
+  #       ORACLE_HOME={{ oracle_home }}
+  #       ORACLE_BASE={{ oracle_base }}
+  #       oracle.install.db.InstallEdition=EE
+  #       oracle.install.db.OSDBA_GROUP=dba
+  #       oracle.install.db.OSOPER_GROUP=oper
+  #       oracle.install.db.OSBACKUPDBA_GROUP=backupdba
+  #       oracle.install.db.OSDGDBA_GROUP=dgdba
+  #       oracle.install.db.OSKMDBA_GROUP=kmdba
+  #       oracle.install.db.OSRACDBA_GROUP=racdba
+  #       DECLINE_SECURITY_UPDATES=true
+  #     args:
+  #       chdir: "{{ oracle_home }}"
+  #     register: install_result
+  #     ignore_errors: true
 
-    - name: Run root scripts after installation
-      command: "{{ item }}"
-      with_items:
-        - "{{ oracle_inventory }}/orainstRoot.sh"
-        - "{{ oracle_home }}/root.sh"
-      when: install_result.rc == 0
+  #   - name: Run root scripts after installation
+  #     command: "{{ item }}"
+  #     with_items:
+  #       - "{{ oracle_inventory }}/orainstRoot.sh"
+  #       - "{{ oracle_home }}/root.sh"
+  #     when: install_result.rc == 0
