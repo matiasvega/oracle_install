@@ -7,7 +7,7 @@ oracle_zip_file: LINUX.X64_193000_db_home.zip
 oracle_response_file: db_install.rsp
 oracle_scripts: /home/oracle/scripts
 
-ssh_key: /root/.ssh/id_rsa
+ssh_key: /var/lib/jenkins/.ssh/id_rsa
 
 ip: "{{ lookup('env','ip') }}"
 dbhostname: "{{ lookup('env','dbhostname')  }}"
