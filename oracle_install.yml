@@ -143,6 +143,7 @@
         ORACLE_HOME: "{{ oracle_home }}"
         LANG: en_US.UTF-8
         PATH: "{{ oracle_home }}/bin:$PATH"
+        CV_ASSUME_DISTID: "OL7" 
       vars:
         ansible_ssh_pipelining: true
       command: >
