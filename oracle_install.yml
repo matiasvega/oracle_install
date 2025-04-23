@@ -144,8 +144,7 @@
         LANG: en_US.UTF-8
         PATH: "{{ oracle_home }}/bin:$PATH"
         CV_ASSUME_DISTID: "OL7" 
-      vars:
-        ansible_ssh_pipelining: true
+        ORACLE_HOSTNAME: "{{ dbhostname }}.localdomain"
       command: >
         {{ oracle_home }}/runInstaller
         -ignorePrereq -waitforcompletion -silent
