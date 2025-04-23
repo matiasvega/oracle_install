@@ -35,22 +35,22 @@
     - name: Ensure required OS packages are installed
       raw: dnf install -y oracle-database-preinstall-19c
 
-    # - name: Configure hosts file
-    #   become: true
-    #   ansible.builtin.lineinfile:
-    #     path: /etc/hosts
-    #     line: "{{ ip }}  {{ dbhostname }}.localdomain  {{ dbhostname }}"
-    #     insertafter: EOF
-    #     backup: yes
-    #   become_user: root
+    - name: Configure hosts file
+      become: true
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "{{ ip }}  {{ dbhostname }}.localdomain  {{ dbhostname }}"
+        insertafter: EOF
+        backup: yes
+      become_user: root
 
-    # - name: Configure hostname
-    #   become: true
-    #   ansible.builtin.lineinfile:
-    #     path: /etc/hostname
-    #     line: "{{ dbhostname }}.localdomain"
-    #     insertafter: EOF
-    #   become_user: root
+    - name: Configure hostname
+      become: true
+      ansible.builtin.lineinfile:
+        path: /etc/hostname
+        line: "{{ dbhostname }}.localdomain"
+        insertafter: EOF
+      become_user: root
 
 
     - name: Create required directories
