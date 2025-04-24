@@ -171,3 +171,86 @@
         - "{{ oracle_inventory }}/orainstRoot.sh"
         - "{{ oracle_home }}/root.sh"
       when: install_result.rc == 0
+
+
+    - name: Create listener using NETCA
+      become_user: "{{ oracle_user }}"
+      command: >
+        {{ oracle_home }}/bin/netca -silent -responsefile {{ oracle_home }}/install/response/netca.rsp
+      args:
+        chdir: "{{ oracle_home }}"
+      register: netca_result
+
+    - name: Ensure listener.ora exists
+      stat:
+        path: "{{ oracle_home }}/network/admin/listener.ora"
+      register: listener_ora_file
+
+    - name: Backup and update listener.ora (if needed)
+      block:
+        - name: Backup listener.ora
+          copy:
+            src: "{{ oracle_home }}/network/admin/listener.ora"
+            dest: "{{ oracle_home }}/network/admin/listener.ora.bak"
+            remote_src: yes
+
+        - name: Overwrite listener.ora
+          copy:
+            dest: "{{ oracle_home }}/network/admin/listener.ora"
+            content: |
+              LISTENER =
+                (DESCRIPTION_LIST =
+                  (DESCRIPTION =
+                    (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_hostname }})(PORT = {{ listener_port }}))
+                  )
+                )
+
+              SID_LIST_LISTENER =
+                (SID_LIST =
+                  (SID_DESC =
+                    (SID_NAME = {{ db_sid }})
+                    (ORACLE_HOME = {{ oracle_home }})
+                    (PROGRAM = extproc)
+                  )
+                )
+          owner: "{{ oracle_user }}"
+          group: "{{ oracle_group }}"
+          mode: '0644'
+      when: listener_ora_file.stat.exists
+
+    - name: Start Oracle Listener
+      become_user: "{{ oracle_user }}"
+      command: "{{ oracle_home }}/bin/lsnrctl start {{ listener_name }}"
+      register: lsnrctl_result
+      ignore_errors: true
+
+    - name: Create Oracle Database using DBCA
+      become_user: "{{ oracle_user }}"
+      command: >
+        {{ oracle_home }}/bin/dbca -silent
+        -createDatabase
+        -templateName General_Purpose.dbc
+        -gdbname {{ db_name }}
+        -sid {{ db_sid }}
+        -responseFile NO_VALUE
+        -characterSet {{ db_character_set }}
+        -createAsContainerDatabase true
+        -numberOfPDBs 1
+        -pdbName {{ pdb_name }}
+        -createListener {{ listener_name }},port={{ listener_port }}
+        -datafileDestination '{{ oracle_base }}/oradata'
+        -emConfiguration NONE
+        -sysPassword {{ db_password }}
+        -systemPassword {{ db_password }}
+        -pdbAdminPassword {{ db_password }}
+        -databaseType MULTIPURPOSE
+        -automaticMemoryManagement false
+        -totalMemory 2048
+      register: dbca_result
+      args:
+        chdir: "{{ oracle_home }}"
+      when: install_result.rc == 0
+
+    - name: Show DBCA output
+      debug:
+        var: dbca_result.stdout_lines
