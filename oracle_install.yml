@@ -316,6 +316,13 @@
         mode: '0644'
 
     - name: Create Oracle Database using DBCA
+      environment:
+        ORACLE_BASE: "{{ oracle_base }}"
+        ORACLE_HOME: "{{ oracle_home }}"
+        LANG: en_US.UTF-8
+        PATH: "{{ oracle_home }}/bin:$PATH"
+        CV_ASSUME_DISTID: "OL7" 
+        ORACLE_HOSTNAME: "{{ dbhostname }}.localdomain"    
       become_user: "{{ oracle_user }}"
       command: >
         {{ oracle_home }}/bin/dbca -silent

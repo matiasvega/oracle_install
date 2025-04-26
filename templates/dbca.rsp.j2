@@ -1,17 +1,60 @@
-[CREATEDATABASE]
-GDBNAME = "{{ db_name }}"
-SID = "{{ db_sid }}"
-TEMPLATENAME = "General_Purpose.dbc"
-CHARACTERSET = "{{ db_character_set }}"
-TOTALMEMORY = "2048"
-CREATEASCONTAINERDATABASE = "true"
-NUMBEROFPDBS = "1"
-PDBNAME = "{{ pdb_name }}"
-PDBADMINPASSWORD = "{{ db_password }}"
-DATABASETYPE = "MULTIPURPOSE"
-AUTOMATICMEMORYMANAGEMENT = "false"
-LISTENERS = "{{ listener_name }}"
-DATAFILEDESTINATION = "{{ oracle_base }}/oradata"
-SYSPASSWORD = "{{ db_password }}"
-SYSTEMPASSWORD = "{{ db_password }}"
-EMCONFIGURATION = "NONE"
+# Copyright (c) 2012, 2023, Oracle and/or its affiliates. All rights reserved.
+#
+# Directives in this response file are case-insensitive.
+# Any leading and trailing white spaces are trimmed.
+# Comments are preceded with a '#' symbol.
+#
+# The following variables are used to configure the multitenant container database (CDB).
+#
+# Global Database Name (Mandatory)
+gdbName="{{ db_name }}"
+
+# System Identifier (SID) (Mandatory)
+sid="{{ db_sid }}"
+
+# Database option configuration
+createDatabase=true
+databaseConfigType=BASIC
+templateName=General_Purpose.dbf
+characterSet="{{ db_character_set }}"
+nationalCharacterSet=AL16UTF16
+securityOptions.enableSecurity=false
+
+# Storage Configuration
+storageType=FILE_SYSTEM_STORAGE
+dbFileDestination=/u01/oradata/"{{ db_name }}"
+redoLogFileSize=100
+databaseType=MULTIPURPOSE
+
+# Listener Configuration
+listenerPort=1521
+
+# Memory Configuration
+memoryMgmtType=AUTO_MEMORY
+totalMemory=2048
+
+# Control File Configuration
+controlFiles=/u01/oradata/CDB1/control01.ctl,/u01/oradata/CDB1/control02.ctl
+
+# System and Sys Password (Mandatory)
+sysPassword="{{ db_password }}"
+systemPassword="{{ db_password }}"
+
+# Automatic Diagnostic Repository (ADR) Configuration
+enableASM=false
+useLocalASM=false
+asmSysPassword=
+emConfiguration=NONE
+
+# Database Content
+starterDatabase=false
+
+# Seed Datafiles
+seedDatafile=/opt/oracle/product/19c/dbhome_1/assistants/dbca/templates/General_Purpose.dfb
+
+# Multitenant Options
+createPDB=true
+pdbName="{{ pdb_name }}"
+pdbAdminPassword="{{ db_password }}"
+pdbStorageType=FILE_SYSTEM_STORAGE
+pdbFileDestination=/u01/oradata/"{{ db_name }}"/"{{ pdb_name }}"
