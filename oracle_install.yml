@@ -207,56 +207,93 @@
       when: install_result.rc == 0
 
 
-    - name: Create listener using NETCA
-      become_user: "{{ oracle_user }}"
-      command: >
-        {{ oracle_home }}/bin/netca -silent -responsefile {{ oracle_home }}/install/response/netca.rsp
-      args:
-        chdir: "{{ oracle_home }}"
-      register: netca_result
-
-    - name: Ensure listener.ora exists
-      stat:
+    #LISTENER CRETION / CONFIGURATION
+    - name: Check if listener.ora already exists
+      ansible.builtin.stat:
         path: "{{ oracle_home }}/network/admin/listener.ora"
-      register: listener_ora_file
+      register: listener_ora_status
 
-    - name: Backup and update listener.ora (if needed)
-      block:
-        - name: Backup listener.ora
-          copy:
-            src: "{{ oracle_home }}/network/admin/listener.ora"
-            dest: "{{ oracle_home }}/network/admin/listener.ora.bak"
-            remote_src: yes
+    - name: Create listener.ora from template
+      ansible.builtin.template:
+        src: "templates/listener.ora.j2"
+        dest: "{{ oracle_home }}/network/admin/listener.ora"
+        owner: "{{ oracle_user }}"
+        group: "{{ oracle_group }}"
+        mode: '0644'
+      become: true
+      when: not listener_ora_status.stat.exists
 
-        - name: Overwrite listener.ora
-          copy:
-            dest: "{{ oracle_home }}/network/admin/listener.ora"
-            content: |
-              LISTENER =
-                (DESCRIPTION_LIST =
-                  (DESCRIPTION =
-                    (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_hostname }})(PORT = {{ listener_port }}))
-                  )
-                )
+    - name: Start the Oracle Listener
+      ansible.builtin.command:
+        cmd: "{{ oracle_home }}/bin/lsnrctl start {{ listener_name | default('LISTENER') }}"
+        user: oracle
+      become: true
+      register: listener_start_output
+      ignore_errors: true # Listener might already be running
 
-              SID_LIST_LISTENER =
-                (SID_LIST =
-                  (SID_DESC =
-                    (SID_NAME = {{ db_sid }})
-                    (ORACLE_HOME = {{ oracle_home }})
-                    (PROGRAM = extproc)
-                  )
-                )
-            owner: "{{ oracle_user }}"
-            group: "{{ oracle_group }}"
-            mode: '0644'
-      when: listener_ora_file.stat.exists
+    - name: Check Listener Status
+      ansible.builtin.command:
+        cmd: "{{ oracle_home }}/bin/lsnrctl status {{ listener_name | default('LISTENER') }}"
+        user: oracle
+      become: true
+      register: listener_status_output
+      changed_when: "'The listener supports no services' in listener_status_output.stdout" # Consider this or other relevant checks
 
-    - name: Start Oracle Listener
-      become_user: "{{ oracle_user }}"
-      command: "{{ oracle_home }}/bin/lsnrctl start {{ listener_name }}"
-      register: lsnrctl_result
-      ignore_errors: true
+    - name: Display Listener Status
+      ansible.builtin.debug:
+        var: listener_status_output.stdout_lines
+
+
+    # - name: Create listener using NETCA
+    #   become_user: "{{ oracle_user }}"
+    #   command: >
+    #     {{ oracle_home }}/bin/netca -silent -responsefile {{ oracle_home }}/install/response/netca.rsp
+    #   args:
+    #     chdir: "{{ oracle_home }}"
+    #   register: netca_result
+
+    # - name: Ensure listener.ora exists
+    #   stat:
+    #     path: "{{ oracle_home }}/network/admin/listener.ora"
+    #   register: listener_ora_file
+
+    # - name: Backup and update listener.ora (if needed)
+    #   block:
+    #     - name: Backup listener.ora
+    #       copy:
+    #         src: "{{ oracle_home }}/network/admin/listener.ora"
+    #         dest: "{{ oracle_home }}/network/admin/listener.ora.bak"
+    #         remote_src: yes
+
+    #     - name: Overwrite listener.ora
+    #       copy:
+    #         dest: "{{ oracle_home }}/network/admin/listener.ora"
+    #         content: |
+    #           LISTENER =
+    #             (DESCRIPTION_LIST =
+    #               (DESCRIPTION =
+    #                 (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_hostname }})(PORT = {{ listener_port }}))
+    #               )
+    #             )
+
+    #           SID_LIST_LISTENER =
+    #             (SID_LIST =
+    #               (SID_DESC =
+    #                 (SID_NAME = {{ db_sid }})
+    #                 (ORACLE_HOME = {{ oracle_home }})
+    #                 (PROGRAM = extproc)
+    #               )
+    #             )
+    #         owner: "{{ oracle_user }}"
+    #         group: "{{ oracle_group }}"
+    #         mode: '0644'
+    #   when: listener_ora_file.stat.exists
+
+    # - name: Start Oracle Listener
+    #   become_user: "{{ oracle_user }}"
+    #   command: "{{ oracle_home }}/bin/lsnrctl start {{ listener_name }}"
+    #   register: lsnrctl_result
+    #   ignore_errors: true
 
     - name: Create Oracle Database using DBCA
       become_user: "{{ oracle_user }}"
