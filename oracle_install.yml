@@ -224,18 +224,16 @@
       when: not listener_ora_status.stat.exists
 
     - name: Start the Oracle Listener
-      ansible.builtin.command:
-        cmd: "{{ oracle_home }}/bin/lsnrctl start {{ listener_name | default('LISTENER') }}"
-        user: oracle
-      become: true
+      become_user: "{{ oracle_user }}"
+      command: >
+        {{ oracle_home }}/bin/lsnrctl start {{ listener_name | default('LISTENER') }}
       register: listener_start_output
       ignore_errors: true # Listener might already be running
 
     - name: Check Listener Status
-      ansible.builtin.command:
-        cmd: "{{ oracle_home }}/bin/lsnrctl status {{ listener_name | default('LISTENER') }}"
-        user: oracle
-      become: true
+      become_user: "{{ oracle_user }}"
+      command: >
+        {{ oracle_home }}/bin/lsnrctl status {{ listener_name | default('LISTENER') }}
       register: listener_status_output
       changed_when: "'The listener supports no services' in listener_status_output.stdout" # Consider this or other relevant checks
 
