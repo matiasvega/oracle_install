@@ -35,73 +35,73 @@
     #OEL8
     # - name: Ensure required OS packages are installed
 
-    - name: Enable required repositories on OEL9
-      become: true
-      block:
-        - name: Ensure dnf-utils is installed (for config-manager)
-          package:
-            name: dnf-utils
-            state: present
+    # - name: Enable required repositories on OEL9
+    #   become: true
+    #   block:
+    #     - name: Ensure dnf-utils is installed (for config-manager)
+    #       package:
+    #         name: dnf-utils
+    #         state: present
 
-        - name: Enable ol9_baseos_latest
-          command: dnf config-manager --set-enabled ol9_baseos_latest
-          changed_when: false
+    #     - name: Enable ol9_baseos_latest
+    #       command: dnf config-manager --set-enabled ol9_baseos_latest
+    #       changed_when: false
 
-        - name: Enable ol9_appstream
-          command: dnf config-manager --set-enabled ol9_appstream
-          changed_when: false
+    #     - name: Enable ol9_appstream
+    #       command: dnf config-manager --set-enabled ol9_appstream
+    #       changed_when: false
 
-        - name: Enable ol9_codeready_builder
-          command: dnf config-manager --set-enabled ol9_codeready_builder
-          changed_when: false
+    #     - name: Enable ol9_codeready_builder
+    #       command: dnf config-manager --set-enabled ol9_codeready_builder
+    #       changed_when: false
 
-        - name: Install Oracle EPEL release
-          package:
-            name: oracle-epel-release-el9
-            state: present
+    #     - name: Install Oracle EPEL release
+    #       package:
+    #         name: oracle-epel-release-el9
+    #         state: present
 
-    #Update all the packages
-    - name: Ensure required OS packages are installed
-      raw:  dnf update -y
+    # #Update all the packages
+    # - name: Ensure required OS packages are installed
+    #   raw:  dnf update -y
 
-    - name: Ensure perl-Algorithm-Diff are installed
-      raw:  dnf install -y perl-Algorithm-Diff
+    # - name: Ensure perl-Algorithm-Diff are installed
+    #   raw:  dnf install -y perl-Algorithm-Diff
 
-    - name: Install Oracle 19c dependencies on OEL9
-      become: true
-      package:
-        name:
-          - binutils
-          - gcc
-          - gcc-c++
-          - glibc
-          - glibc-devel
-          - libaio
-          - libaio-devel
-          - make
-          - sysstat
-          - smartmontools
-          - elfutils-libelf-devel
-          - libnsl
-          - libxcrypt-compat
-          - libstdc++
-          - libstdc++-devel
-          - ksh
-          - perl
-          - perl-devel
-          - policycoreutils-python-utils
-          - kernel-headers
-          - kernel-devel
-        state: present
+    # - name: Install Oracle 19c dependencies on OEL9
+    #   become: true
+    #   package:
+    #     name:
+    #       - binutils
+    #       - gcc
+    #       - gcc-c++
+    #       - glibc
+    #       - glibc-devel
+    #       - libaio
+    #       - libaio-devel
+    #       - make
+    #       - sysstat
+    #       - smartmontools
+    #       - elfutils-libelf-devel
+    #       - libnsl
+    #       - libxcrypt-compat
+    #       - libstdc++
+    #       - libstdc++-devel
+    #       - ksh
+    #       - perl
+    #       - perl-devel
+    #       - policycoreutils-python-utils
+    #       - kernel-headers
+    #       - kernel-devel
+    #     state: present
 
-    #   raw: dnf install -y oracle-database-preinstall-19c
+    # #   raw: dnf install -y oracle-database-preinstall-19c
 
-    # If you are using RHEL9, you can pick up the RPM from the OL9 repository and install it. It will pull the dependencies from your normal repositories.
-    - name: Ensure required OS packages are installed
-      raw: curl -o oracle-database-preinstall-19c-1.0-1.el9.x86_64.rpm https://yum.oracle.com/repo/OracleLinux/OL9/appstream/x86_64/getPackage/oracle-database-preinstall-19c-1.0-1.el9.x86_64.rpm
+    # # If you are using RHEL9, you can pick up the RPM from the OL9 repository and install it. It will pull the dependencies from your normal repositories.
+    # - name: Ensure required OS packages are installed
+    #   raw: curl -o oracle-database-preinstall-19c-1.0-1.el9.x86_64.rpm https://yum.oracle.com/repo/OracleLinux/OL9/appstream/x86_64/getPackage/oracle-database-preinstall-19c-1.0-1.el9.x86_64.rpm
 
-    - name: Ensure required OS packages are installed
-      raw: dnf -y localinstall oracle-database-preinstall-19c-1.0-1.el9.x86_64.rpm
+    # - name: Ensure required OS packages are installed
+    #   raw: dnf -y localinstall oracle-database-preinstall-19c-1.0-1.el9.x86_64.rpm
 
 
     # - name: Configure hosts file
