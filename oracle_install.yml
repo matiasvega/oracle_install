@@ -32,26 +32,43 @@
     # - name: Ensure base Python packages are installed
     #   raw: sudo dnf install -y python3 python3-libselinux python3-libsemanage python3-dnf   
 
+    #Update all the packages
     - name: Ensure required OS packages are installed
-      raw: dnf install -y oracle-database-preinstall-19c
+      raw: dnf update -y
 
-    - name: Configure hosts file
-      become: true
-      ansible.builtin.lineinfile:
-        path: /etc/hosts
-        line: "{{ ip }}  {{ dbhostname }}.localdomain  {{ dbhostname }}"
-        insertafter: EOF
-        backup: yes
-      become_user: root
+    #OEL 9
+    # - name: Ensure required OS packages are installed
+    #   raw: dnf install -y oracle-database-preinstall-19c
 
-    - name: Configure hostname
-      become: true
-      ansible.builtin.lineinfile:
-        path: /etc/hostname
-        line: "{{ dbhostname }}.localdomain"
-        insertafter: EOF
-      become_user: root
+    # If you are using RHEL9, you can pick up the RPM from the OL9 repository and install it. It will pull the dependencies from your normal repositories.
+    - name: Ensure required OS packages are installed
+      raw: curl -o oracle-database-preinstall-19c-1.0-1.el9.x86_64.rpm https://yum.oracle.com/repo/OracleLinux/OL9/appstream/x86_64/getPackage/oracle-database-preinstall-19c-1.0-1.el9.x86_64.rpm
 
+    - name: Ensure required OS packages are installed
+      raw: dnf -y localinstall oracle-database-preinstall-19c-1.0-1.el9.x86_64.rpm
+
+    # - name: Configure hosts file
+    #   become: true
+    #   ansible.builtin.lineinfile:
+    #     path: /etc/hosts
+    #     line: "{{ ip }}  {{ dbhostname }}.localdomain  {{ dbhostname }}"
+    #     insertafter: EOF
+    #     backup: yes
+    #   become_user: root
+
+    # - name: Configure hostname
+    #   become: true
+    #   ansible.builtin.lineinfile:
+    #     path: /etc/hostname
+    #     line: "{{ dbhostname }}.localdomain"
+    #     insertafter: EOF
+    #   become_user: root
+
+
+    - name: Set hostname to {{ dbhostname }}
+      ansible.builtin.hostname:
+        name: {{ dbhostname }}
+        use: redhat
 
     - name: Create required directories
       file:
@@ -66,13 +83,24 @@
         - "{{ oracle_inventory }}"
         - "{{ oracle_scripts }}"
 
-# En el fichero /etc/selinux/config el parámetro «SELINUX» debe estar a disabled
-# SELINUX=permissive
-# setenforce Permissive
-# systemctl stop firewalld
-# systemctl disable firewalld
+    # En el fichero /etc/selinux/config el parámetro «SELINUX» debe estar a disabled
+    # SELINUX=permissive
+    # setenforce Permissive
+    # systemctl stop firewalld
+    # systemctl disable firewalld
+    - name: Set SELINUX to permissive
+      ansible.builtin.lineinfile:
+        path: /etc/selinux/config
+        regexp: '^SELINUX='
+        line: 'SELINUX=permissive'
+        state: present
+        backrefs: yes
 
-
+    - name: Stop and disable firewalld
+      ansible.builtin.service:
+        name: firewalld
+        state: stopped
+        enabled: no
 
   tasks:
     # - name: Upload Oracle installer
