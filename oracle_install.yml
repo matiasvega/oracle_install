@@ -67,7 +67,7 @@
 
     - name: Set hostname to {{ dbhostname }}
       ansible.builtin.hostname:
-        name: {{ dbhostname }}
+        name: "{{ dbhostname }}"
         use: redhat
 
     - name: Create required directories
