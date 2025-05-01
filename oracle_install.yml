@@ -32,6 +32,9 @@
     # - name: Ensure base Python packages are installed
     #   raw: sudo dnf install -y python3 python3-libselinux python3-libsemanage python3-dnf   
 
+    #OEL8
+    # - name: Ensure required OS packages are installed
+
     - name: Enable required repositories on OEL9
       become: true
       block:
@@ -77,7 +80,6 @@
           - smartmontools
           - elfutils-libelf-devel
           - libnsl
-          - libnsl-devel
           - libxcrypt-compat
           - libstdc++
           - libstdc++-devel
@@ -90,8 +92,7 @@
         state: present
 
 
-    #OEL 9
-    # - name: Ensure required OS packages are installed
+
     #   raw: dnf install -y oracle-database-preinstall-19c
 
     # If you are using RHEL9, you can pick up the RPM from the OL9 repository and install it. It will pull the dependencies from your normal repositories.
