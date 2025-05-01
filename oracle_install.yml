@@ -62,7 +62,10 @@
 
     #Update all the packages
     - name: Ensure required OS packages are installed
-      raw: dnf update -y
+      raw:  dnf update -y
+
+    - name: Ensure perl-Algorithm-Diff are installed
+      raw:  dnf install -y perl-Algorithm-Diff
 
     - name: Install Oracle 19c dependencies on OEL9
       become: true
@@ -90,8 +93,6 @@
           - kernel-headers
           - kernel-devel
         state: present
-
-
 
     #   raw: dnf install -y oracle-database-preinstall-19c
 
