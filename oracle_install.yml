@@ -32,12 +32,37 @@
     # - name: Ensure base Python packages are installed
     #   raw: sudo dnf install -y python3 python3-libselinux python3-libsemanage python3-dnf   
 
+    - name: Enable required repositories on OEL9
+      become: true
+      block:
+        - name: Ensure dnf-utils is installed (for config-manager)
+          package:
+            name: dnf-utils
+            state: present
+
+        - name: Enable ol9_baseos_latest
+          command: dnf config-manager --set-enabled ol9_baseos_latest
+          changed_when: false
+
+        - name: Enable ol9_appstream
+          command: dnf config-manager --set-enabled ol9_appstream
+          changed_when: false
+
+        - name: Enable ol9_codeready_builder
+          command: dnf config-manager --set-enabled ol9_codeready_builder
+          changed_when: false
+
+        - name: Install Oracle EPEL release
+          package:
+            name: oracle-epel-release-el9
+            state: present
+
     #Update all the packages
     - name: Ensure required OS packages are installed
       raw: dnf update -y
 
-    - name: Install Oracle 19c dependencies
-      become: yes
+    - name: Install Oracle 19c dependencies on OEL9
+      become: true
       package:
         name:
           - binutils
@@ -50,24 +75,20 @@
           - make
           - sysstat
           - smartmontools
-          - unixODBC
-          - unixODBC-devel
           - elfutils-libelf-devel
           - libnsl
-          - libnsl2
-          - libnsl2-devel
+          - libnsl-devel
           - libxcrypt-compat
           - libstdc++
           - libstdc++-devel
-          - compat-openssl10
           - ksh
-          - policycoreutils-python-utils
           - perl
           - perl-devel
+          - policycoreutils-python-utils
           - kernel-headers
           - kernel-devel
         state: present
-      when: ansible_os_family == "RedHat"   
+
 
     #OEL 9
     # - name: Ensure required OS packages are installed
