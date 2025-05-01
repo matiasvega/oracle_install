@@ -36,12 +36,38 @@
     - name: Ensure required OS packages are installed
       raw: dnf update -y
 
-    - name: Install libxcrypt-compat (required for Oracle installer)
+    - name: Install Oracle 19c dependencies
       become: yes
       package:
-        name: libxcrypt-compat
+        name:
+          - binutils
+          - gcc
+          - gcc-c++
+          - glibc
+          - glibc-devel
+          - libaio
+          - libaio-devel
+          - make
+          - sysstat
+          - smartmontools
+          - unixODBC
+          - unixODBC-devel
+          - elfutils-libelf-devel
+          - libnsl
+          - libnsl2
+          - libnsl2-devel
+          - libxcrypt-compat
+          - libstdc++
+          - libstdc++-devel
+          - compat-openssl10
+          - ksh
+          - policycoreutils-python-utils
+          - perl
+          - perl-devel
+          - kernel-headers
+          - kernel-devel
         state: present
-      when: ansible_os_family == "RedHat"      
+      when: ansible_os_family == "RedHat"   
 
     #OEL 9
     # - name: Ensure required OS packages are installed
