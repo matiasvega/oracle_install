@@ -64,11 +64,22 @@
     #     insertafter: EOF
     #   become_user: root
 
+    - name: Set the runtime hostname
+      ansible.builtin.command: hostnamectl set-hostname {{ dbhostname }}
 
-    - name: Set hostname to {{ dbhostname }}
-      ansible.builtin.hostname:
-        name: "{{ dbhostname }}"
-        use: redhat
+    - name: Ensure /etc/hostname has the correct name
+      ansible.builtin.copy:
+        dest: /etc/hostname
+        content: "{{ dbhostname }}\n"
+        mode: '0644'
+
+    - name: Update /etc/hosts with hostname
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        regexp: '^127\.0\.1\.1\s+'
+        line: "127.0.1.1   {{ dbhostname }}"
+        state: present
+
 
     - name: Create required directories
       file:
