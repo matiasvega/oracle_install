@@ -303,7 +303,7 @@
       when: install_result.rc == 0
 
 
-    #LISTENER CRETION / CONFIGURATION
+    #LISTENER CREATION / CONFIGURATION
     - name: Check if listener.ora already exists
       ansible.builtin.stat:
         path: "{{ oracle_home }}/network/admin/listener.ora"
