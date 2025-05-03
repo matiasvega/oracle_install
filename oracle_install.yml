@@ -4,8 +4,8 @@
   vars_files:
     - vars/main.yml
   vars:
-    ip: "{{ lookup('env','ip') }}"
-    dbhostname: "{{ lookup('env','dbhostname')  }}"
+    ip: "{{ lookup('env','IP') }}"
+    dbhostname: "{{ lookup('env','DBHOSTNAME')  }}"
 
   tasks:
 

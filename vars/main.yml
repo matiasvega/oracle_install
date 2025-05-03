@@ -9,14 +9,14 @@ oracle_scripts: /home/oracle/scripts
 
 ssh_key: /var/lib/jenkins/.ssh/id_rsa
 
-ip: "{{ lookup('env','ip') }}"
-dbhostname: "{{ lookup('env','dbhostname')  }}"
-dbname: "{{ lookup('env','dbname')  }}"
-sid: "{{ lookup('env','sid')  }}"
-pdb: "{{ lookup('env','pdb')  }}"
-characterset: "{{ lookup('env','characterset')  }}"
-dbpassword: "{{ lookup('env','dbpassword')  }}"
-totalmemory: "{{ lookup('env','totalmemory')  }}"
+ip: "{{ lookup('env','IP') }}"
+dbhostname: "{{ lookup('env','DBHOSTNAME')  }}"
+dbname: "{{ lookup('env','DBNAME')  }}"
+sid: "{{ lookup('env','SID')  }}"
+pdb: "{{ lookup('env','PDB')  }}"
+characterset: "{{ lookup('env','CHARACTERSET')  }}"
+dbpassword: "{{ lookup('env','DBPASSWORD')  }}"
+totalmemory: "{{ lookup('env','TOTALMEMORY')  }}"
 
 #Listener vars
 listener_name: LISTENER
