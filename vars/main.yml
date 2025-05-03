@@ -11,15 +11,22 @@ ssh_key: /var/lib/jenkins/.ssh/id_rsa
 
 ip: "{{ lookup('env','ip') }}"
 dbhostname: "{{ lookup('env','dbhostname')  }}"
+dbname: "{{ lookup('env','dbname')  }}"
+sid: "{{ lookup('env','sid')  }}"
+pdb: "{{ lookup('env','pdb')  }}"
+characterset: "{{ lookup('env','characterset')  }}"
+dbpassword: "{{ lookup('env','dbpassword')  }}"
+totalmemory: "{{ lookup('env','totalmemory')  }}"
 
 #Listener vars
 listener_name: LISTENER
 listener_port: 1521
 
 #DB vars
-db_name: ORCL
-db_sid: ORCL
-pdb_name: PDB1
+db_name: dbname
+db_sid: sid
+pdb_name: pdb
 db_port: 1521
-db_character_set: AL32UTF8
-db_password: Oracle123
+db_character_set: characterset
+db_password: dbpassword
+total_memory: totalmemory

@@ -460,7 +460,7 @@
         -pdbAdminPassword {{ db_password }}
         -databaseType MULTIPURPOSE
         -automaticMemoryManagement false
-        -totalMemory 2048
+        -totalMemory {{ total_memory }}
       register: dbca_result
       args:
         chdir: "{{ oracle_home }}"
