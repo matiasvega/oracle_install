@@ -4,7 +4,7 @@
 LISTENER =
   (DESCRIPTION_LIST =
     (DESCRIPTION =
-      (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_hostname }})(PORT = {{ listener_port | default(1521) }}))
+      (ADDRESS = (PROTOCOL = TCP)(HOST = {{ dbhostname }})(PORT = {{ listener_port | default(1521) }}))
     )
   )
 
