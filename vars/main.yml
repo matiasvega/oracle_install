@@ -16,7 +16,7 @@ sid: "{{ lookup('env','SID')  }}"
 pdb: "{{ lookup('env','PDB')  }}"
 characterset: "{{ lookup('env','CHARACTERSET')  }}"
 dbpassword: "{{ lookup('env','DBPASSWORD')  }}"
-totalmemory: "{{ lookup('env','TOTALMEMORY')  }}"
+totalmemory: "{{ lookup('env','TOTALMEMORY')  }} | int"
 
 #Listener vars
 listener_name: LISTENER
