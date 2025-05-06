@@ -24,10 +24,10 @@ listener_name: LISTENER
 listener_port: 1521
 
 #DB vars
-db_name: dbname
-db_sid: sid
-pdb_name: pdb
+db_name: "{{ dbname }}"
+db_sid: "{{ sid }}"
+pdb_name: "{{ pdb }}"
 db_port: 1521
-db_character_set: characterset
-db_password: dbpassword
-total_memory: totalmemory
+db_character_set: "{{ characterset }}"
+db_password: "{{ dbpassword }}"
+total_memory: "{{ totalmemory }}"
