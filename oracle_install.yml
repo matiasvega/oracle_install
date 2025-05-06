@@ -13,6 +13,10 @@
       debug:
         var: "{{ ip }}"
 
+    - name: Show the total memory
+      debug:
+        var: "{{ iptotalmemory }}"
+
     - name: Dynamically add new host to group "new_db"
       add_host:
         name: "{{ ip }}"
@@ -352,84 +356,6 @@
       ansible.builtin.debug:
         var: listener_status_output.stdout_lines
 
-
-    # - name: Create listener using NETCA
-    #   become_user: "{{ oracle_user }}"
-    #   command: >
-    #     {{ oracle_home }}/bin/netca -silent -responsefile {{ oracle_home }}/install/response/netca.rsp
-    #   args:
-    #     chdir: "{{ oracle_home }}"
-    #   register: netca_result
-
-    # - name: Ensure listener.ora exists
-    #   stat:
-    #     path: "{{ oracle_home }}/network/admin/listener.ora"
-    #   register: listener_ora_file
-
-    # - name: Backup and update listener.ora (if needed)
-    #   block:
-    #     - name: Backup listener.ora
-    #       copy:
-    #         src: "{{ oracle_home }}/network/admin/listener.ora"
-    #         dest: "{{ oracle_home }}/network/admin/listener.ora.bak"
-    #         remote_src: yes
-
-    #     - name: Overwrite listener.ora
-    #       copy:
-    #         dest: "{{ oracle_home }}/network/admin/listener.ora"
-    #         content: |
-    #           LISTENER =
-    #             (DESCRIPTION_LIST =
-    #               (DESCRIPTION =
-    #                 (ADDRESS = (PROTOCOL = TCP)(HOST = {{ ansible_hostname }})(PORT = {{ listener_port }}))
-    #               )
-    #             )
-
-    #           SID_LIST_LISTENER =
-    #             (SID_LIST =
-    #               (SID_DESC =
-    #                 (SID_NAME = {{ db_sid }})
-    #                 (ORACLE_HOME = {{ oracle_home }})
-    #                 (PROGRAM = extproc)
-    #               )
-    #             )
-    #         owner: "{{ oracle_user }}"
-    #         group: "{{ oracle_group }}"
-    #         mode: '0644'
-    #   when: listener_ora_file.stat.exists
-
-    # - name: Start Oracle Listener
-    #   become_user: "{{ oracle_user }}"
-    #   command: "{{ oracle_home }}/bin/lsnrctl start {{ listener_name }}"
-    #   register: lsnrctl_result
-    #   ignore_errors: true
-
-    # - name: Generate dba.rsp from template
-    #   template:
-    #     src: templates/dbca.rsp.j2
-    #     dest: "{{ oracle_home }}/install/response/dbca.rsp"
-    #     owner: "{{ oracle_user }}"
-    #     group: "{{ oracle_group }}"
-    #     mode: '0644'
-
-    # - name: Create Oracle Database using DBCA
-    #   environment:
-    #     ORACLE_BASE: "{{ oracle_base }}"
-    #     ORACLE_HOME: "{{ oracle_home }}"
-    #     LANG: en_US.UTF-8
-    #     PATH: "{{ oracle_home }}/bin:$PATH"
-    #     CV_ASSUME_DISTID: "OL7" 
-    #     ORACLE_HOSTNAME: "{{ dbhostname }}.localdomain"   
-    #     LD_LIBRARY_PATH: "{{ oracle_home }}/lib:$LD_LIBRARY_PATH"
-    #   become_user: "{{ oracle_user }}"
-    #   command: >
-    #     {{ oracle_home }}/bin/dbca -silent
-    #     -createDatabase
-    #     -responseFile {{ oracle_home }}/install/response/dbca.rsp
-    #   register: dbca_result
-    #   args:
-    #     chdir: "{{ oracle_home }}"
-    #   when: install_result.rc == 0
 
     - name: Create Oracle Database using DBCA
       environment:
