@@ -15,7 +15,7 @@
 
     - name: Show the total memory
       debug:
-        var: "{{ iptotalmemory }}"
+        var: "{{ total_memory }}"
 
     - name: Dynamically add new host to group "new_db"
       add_host:
