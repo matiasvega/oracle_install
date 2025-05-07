@@ -375,6 +375,7 @@
         -sid {{ db_sid }}
         -responseFile NO_VALUE
         -characterSet {{ db_character_set }}
+        -nationalCharacterSet {{ db_national_character_set }}
         -createAsContainerDatabase true
         -numberOfPDBs 1
         -pdbName {{ pdb_name }}
@@ -387,6 +388,7 @@
         -databaseType MULTIPURPOSE
         -automaticMemoryManagement false
         -totalMemory {{ total_memory }}
+        -initParams sga_target={{ sga_target }},pga_aggregate_target={{ pga_aggregate_target }},processes={{ processes }}
       register: dbca_result
       args:
         chdir: "{{ oracle_home }}"
@@ -395,3 +397,23 @@
     - name: Show DBCA output
       debug:
         var: dbca_result.stdout_lines
+
+#Setear el characterset correcto
+
+
+    #Abrir la PDB
+    - name: Open and save state of the PDB
+      become: yes
+      become_user: oracle
+      shell: |
+        . {{ oracle_home }}/bin/oraenv <<< "{{ db_sid }}"
+        sqlplus / as sysdba <<EOF
+        ALTER PLUGGABLE DATABASE ORCLPDB1 OPEN;
+        ALTER PLUGGABLE DATABASE ORCLPDB1 SAVE STATE;
+        EXIT;
+        EOF
+      environment:
+        ORACLE_HOME: "{{ oracle_home }}"
+        ORACLE_SID: "{{ db_sid }}"
+        PATH: "{{ oracle_home }}/bin:{{ ansible_env.PATH }}"
+    

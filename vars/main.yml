@@ -15,6 +15,7 @@ dbname: "{{ lookup('env','DBNAME') }}"
 sid: "{{ lookup('env','SID') }}"
 pdb: "{{ lookup('env','PDB') }}"
 characterset: "{{ lookup('env','CHARACTERSET') }}"
+nationalCharacterSet: "{{ lookup('env','NATIONALCHARACTERSET') }}"
 dbpassword: "{{ lookup('env','DBPASSWORD') | default('Passw0rd01') }}"
 totalmemory: "{{ lookup('env', 'TOTALMEMORY') | default('2048') | int }}"
 
@@ -29,5 +30,10 @@ db_sid: "{{ sid }}"
 pdb_name: "{{ pdb }}"
 db_port: 1521
 db_character_set: "{{ characterset }}"
+db_national_character_set: "{{ nationalCharacterSet }}"
 db_password: "{{ dbpassword }}"
 total_memory: "{{ totalmemory }}"
+
+sga_target: "{{ (total_memory * 0.5) | round(0, 'ceil') }}M"
+pga_aggregate_target: "{{ (total_memory * 0.2) | round(0, 'ceil') }}M"
+processes: 300
