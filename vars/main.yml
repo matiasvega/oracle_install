@@ -34,6 +34,6 @@ db_national_character_set: "{{ nationalCharacterSet }}"
 db_password: "{{ dbpassword }}"
 total_memory: "{{ totalmemory }}"
 
-sga_target: "{{ ((total_memory | int) * 0.5) | round(0, 'ceil') }}M"
+sga_target: "{{ ((total_memory | int) * 0.5) | round(0, 'ceil') }}"
 pga_aggregate_target: "{{ (total_memory | int * 0.2) | round(0, 'ceil') }}M"
 processes: 300
