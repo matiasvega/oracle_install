@@ -15,7 +15,7 @@
 
     - name: Show the total memory
       debug:
-        var: "{{ sga_target | int }}"
+        var: "{{ sga_target }}"
 
     - name: Stop playbook execution
       meta: end_play
