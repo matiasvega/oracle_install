@@ -15,7 +15,11 @@
 
     - name: Show the total memory
       debug:
-        var: "{{ total_memory }}"
+        var: "{{ sga_target | int }}"
+
+    - name: Stop playbook execution
+      meta: end_play
+
 
     - name: Dynamically add new host to group "new_db"
       add_host:
@@ -388,7 +392,7 @@
         -databaseType MULTIPURPOSE
         -automaticMemoryManagement false
         -totalMemory {{ total_memory }}
-        -initParams sga_target={{ sga_target }},pga_aggregate_target={{ pga_aggregate_target }},processes={{ processes }}
+        -initParams sga_target={{ sga_target | int }},pga_aggregate_target={{ pga_aggregate_target | int }},processes={{ processes | int }}
       register: dbca_result
       args:
         chdir: "{{ oracle_home }}"
