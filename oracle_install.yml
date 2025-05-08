@@ -391,7 +391,6 @@
         -pdbAdminPassword {{ db_password }}
         -databaseType MULTIPURPOSE
         -automaticMemoryManagement false
-        -totalMemory {{ total_memory }}
         -initParams sga_target={{ sga_target }},pga_aggregate_target={{ pga_aggregate_target }},processes={{ processes }}
       register: dbca_result
       args:
