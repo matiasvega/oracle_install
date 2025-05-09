@@ -13,12 +13,20 @@
       debug:
         var: "{{ ip }}"
 
-    # - name: Show the total memory
-    #   debug:
-    #     var: "{{ sga_target }}"
+    - name: Show the total memory
+      debug:
+        msg: "The db_password target is {{ db_password }}"
 
-    # - name: Stop playbook execution
-    #   meta: end_play
+    - name: Show the total memory
+      debug:
+        msg: "The sga_target target is {{ sga_target }}"
+
+    - name: Show the total memory
+      debug:
+        msg: "The pga_aggregate_target target is {{ pga_aggregate_target }}"           
+
+    - name: Stop playbook execution
+      meta: end_play
 
 
     - name: Dynamically add new host to group "new_db"
