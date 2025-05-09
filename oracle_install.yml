@@ -29,8 +29,8 @@
       debug:
         msg: "The pga_aggregate_target target is {{ pga_aggregate_target }}"           
 
-    - name: Stop playbook execution
-      meta: end_play
+    # - name: Stop playbook execution
+    #   meta: end_play
 
 
     - name: Dynamically add new host to group "new_db"
