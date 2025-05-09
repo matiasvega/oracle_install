@@ -13,15 +13,19 @@
       debug:
         var: "{{ ip }}"
 
-    - name: Show the total memory
+    - name: Show the db_password
       debug:
         msg: "The db_password target is {{ db_password }}"
 
-    - name: Show the total memory
+    - name: Show the total total_memorymemory
+      debug:
+        msg: "The total_memory target is {{ total_memory }}"
+
+    - name: Show the sga_target
       debug:
         msg: "The sga_target target is {{ sga_target }}"
 
-    - name: Show the total memory
+    - name: Show the pga_aggregate_target
       debug:
         msg: "The pga_aggregate_target target is {{ pga_aggregate_target }}"           
 

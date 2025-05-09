@@ -16,8 +16,10 @@ sid: "{{ lookup('env','SID') }}"
 pdb: "{{ lookup('env','PDB') }}"
 characterset: "{{ lookup('env','CHARACTERSET') }}"
 nationalCharacterSet: "{{ lookup('env','NATIONALCHARACTERSET') }}"
-dbpassword: "{{ lookup('env','DBPASSWORD') | default('Passw0rd01') }}"
-totalmemory: "{{ lookup('env', 'TOTALMEMORY') | default('2048') | int }}"
+
+dbpassword: "{{ (lookup('env','DBPASSWORD') | default('Passw0rd01', true)) }}"
+
+totalmemory: "{{ (lookup('env', 'TOTALMEMORY') | default('2048')) | int }}"
 
 
 #Listener vars
